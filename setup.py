@@ -1,7 +1,12 @@
 from setuptools import setup
 
+def readme():
+    with open('README.rst') as f:
+        return f.read()
+
+
 setup(name='FaceExtractor',
-      version='0.1.1',
+      version='0.1.3',
       description='Extract faces from images with OpenCV',
       url='https://github.com/ducthienbui97/FaceExtractor',
       author='Thien Bui',
@@ -10,6 +15,5 @@ setup(name='FaceExtractor',
       packages=['face_extractor'],
       install_requires=['opencv-python'],
       package_data={'face_extractor':['data/*.xml']},
-      setup_requires=['setuptools-markdown'],
-      long_description_markdown_filename='README.md',
+      long_description=readme(),
 )
