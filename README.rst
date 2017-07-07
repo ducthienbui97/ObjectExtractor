@@ -24,6 +24,4 @@ Sample codes can be found `here
 
 Lena
 
-.. image:: sample/lena.jpg
-
-.. image:: sample/lena_0.jpg
+.. image:: lena_extraction.png
