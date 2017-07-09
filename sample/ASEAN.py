@@ -6,4 +6,4 @@ Created on Sat Jul  8 00:51:00 2017
 """
 
 from face_extractor import Extractor
-Extractor.extract('ASEAN.jpg')
+print (Extractor.extract('ASEAN.jpg',cascadeFile = Extractor.HAARCASCADE_ALT2)) # return 10 faces
