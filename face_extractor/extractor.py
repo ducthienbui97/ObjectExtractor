@@ -19,16 +19,38 @@ class Extractor:
 
     @classmethod
     def load(cls,path = HAARCASCADE_DEFAULT):
+
+        """Load cascade xml file and save to _current_cascade
+        path -- the path of the file (default HAARCASCADE_DEFAULT).
+        """
+
         if path != cls._current_cascade:
             cls._current_cascade = path
             cls._classifier = cv2.CascadeClassifier(path)
 
     @classmethod
     def readImage(cls, imagePath):
+
+        """ Read image from path BGR
+        imagePath -- The path of the image.
+        """
+
         return cv2.imread(imagePath)
 
     @classmethod
-    def colorToGray(cls, image):
+    def bgrToRGB(cls, image):
+        """ Conver BGR image to RGB
+        image -- The image (numpy matrix) read by readImage function.
+        """
+        return cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    
+    @classmethod
+    def bgrToGray(cls, image):
+
+        """ Conver BGR image to gray
+        image -- The image (numpy matrix) read by readImage function.
+        """
+
         return cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)
 
     @classmethod
@@ -39,12 +61,19 @@ class Extractor:
                minNeighbors = 5,
                cascadeFile = _current_cascade):
 
+        """ Return list of faces detected.
+        image -- The image (numpy matrix) read by readImage function.
+        minSize -- Minimum possible object size. Objects smaller than that are ignored (default (50,50)). 
+        scaleFactor -- Specifying how much the image size is reduced at each image scale (default 1.1).
+        minNeighbors -- Specifying how many neighbors each candidate rectangle should have to retain it (default 5).
+        cascadeFile  -- The path of cascade xml file use for detection (default current value)
+        """
+
         classifier = cls._classifier
         if cascadeFile != cls._current_cascade:
-#            print(cascadeFile, cls._current_cascade)
             classifier = cv2.CascadeClassifier(cascadeFile)
 
-        grayImage = cls.colorToGray(image)
+        grayImage = cls.bgrToGray(image)
         return classifier.detectMultiScale(grayImage,
                                            scaleFactor = scaleFactor,
                                            minNeighbors = minNeighbors,
@@ -53,26 +82,21 @@ class Extractor:
     @classmethod
     def extract(cls,
                 imagePath,
+                size = None,
                 scaleFactor = 1.1,
                 minNeighbors = 5,
                 minSize = (50, 50),
                 cascadeFile = _current_cascade):
-
-        cls.extractToSize(imagePath,
-                          size = None,
-                          scaleFactor = scaleFactor,
-                          minNeighbors = minNeighbors,
-                          minSize = minSize,
-                          cascadeFile = cascadeFile)
-
-    @classmethod
-    def extractToSize(cls,
-                      imagePath,
-                      size = (50,50),
-                      scaleFactor = 1.1,
-                      minNeighbors = 5,
-                      minSize = (50, 50),
-                      cascadeFile = _current_cascade):
+        
+        """ Extract the faces from image and return list of faces detected
+        imagePath -- The path of the image.
+        size -- Size of face images (default None - no rescale at all)
+        image -- The image (numpy matrix) read by readImage function.
+        minSize -- Minimum possible object size. Objects smaller than that are ignored (default (50,50)). 
+        scaleFactor -- Specifying how much the image size is reduced at each image scale (default 1.1).
+        minNeighbors -- Specifying how many neighbors each candidate rectangle should have to retain it (default 5).
+        cascadeFile  -- The path of cascade xml file use for detection (default current value)
+        """
 
         image = cls.readImage(imagePath)
         faces = cls.detect(image,
@@ -82,12 +106,12 @@ class Extractor:
                            cascadeFile = cascadeFile)
 
         for idx, (x, y, w, h) in enumerate(faces):
-
             faceSize = max(w,h)
             face = image[y:y + faceSize,x:x + faceSize]
             facePath = os.path.splitext(imagePath)[0]+'_'+str(idx)+'.jpg'
-
             if size:
-                face = cv2.resize(face, size)
+                face = cv2.resize(face, (size,size))
             cv2.imwrite(facePath,face)
+
+        return faces
 
