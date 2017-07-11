@@ -6,7 +6,7 @@ def readme():
 
 
 setup(name='FaceExtractor',
-      version='0.1.4',
+      version='0.1.5',
       description='Extract faces from images with OpenCV',
       url='https://github.com/ducthienbui97/FaceExtractor',
       author='Thien Bui',

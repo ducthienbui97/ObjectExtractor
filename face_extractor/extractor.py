@@ -43,7 +43,7 @@ class Extractor:
         image -- The image (numpy matrix) read by readImage function.
         """
         return cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-    
+
     @classmethod
     def bgrToGray(cls, image):
 
@@ -63,7 +63,7 @@ class Extractor:
 
         """ Return list of faces detected.
         image -- The image (numpy matrix) read by readImage function.
-        minSize -- Minimum possible object size. Objects smaller than that are ignored (default (50,50)). 
+        minSize -- Minimum possible object size. Objects smaller than that are ignored (default (50,50)).
         scaleFactor -- Specifying how much the image size is reduced at each image scale (default 1.1).
         minNeighbors -- Specifying how many neighbors each candidate rectangle should have to retain it (default 5).
         cascadeFile  -- The path of cascade xml file use for detection (default current value)
@@ -86,16 +86,22 @@ class Extractor:
                 scaleFactor = 1.1,
                 minNeighbors = 5,
                 minSize = (50, 50),
-                cascadeFile = _current_cascade):
-        
+                cascadeFile = _current_cascade,
+                outputDirectory = None,
+                outputPrefix = None,
+                startCount = 0):
+
         """ Extract the faces from image and return list of faces detected
         imagePath -- The path of the image.
         size -- Size of face images (default None - no rescale at all)
         image -- The image (numpy matrix) read by readImage function.
-        minSize -- Minimum possible object size. Objects smaller than that are ignored (default (50,50)). 
+        minSize -- Minimum possible object size. Objects smaller than that are ignored (default (50,50)).
         scaleFactor -- Specifying how much the image size is reduced at each image scale (default 1.1).
         minNeighbors -- Specifying how many neighbors each candidate rectangle should have to retain it (default 5).
         cascadeFile  -- The path of cascade xml file use for detection (default current value)
+        outputDirectory -- Directory where to save output (default None - same as input image)
+        outputPrefix -- Prefix of output (default None - the name of input image)
+        startCout -- Specifying the starting of the number put into output names (default 0)
         """
 
         image = cls.readImage(imagePath)
@@ -104,14 +110,19 @@ class Extractor:
                            minNeighbors = minNeighbors,
                            minSize = minSize,
                            cascadeFile = cascadeFile)
-
-        for idx, (x, y, w, h) in enumerate(faces):
+        idx = startCount
+        if not outputPrefix:
+            outputPrefix = os.path.splitext(os.path.split(imagePath)[1])[0]
+        if not outputDirectory:
+            outputDirectory = os.path.split(imagePath)[0]
+        if not os.path.exists(outputDirectory):
+            os.makedirs(outputDirectory)
+        for (x, y, w, h) in faces:
             faceSize = max(w,h)
             face = image[y:y + faceSize,x:x + faceSize]
-            facePath = os.path.splitext(imagePath)[0]+'_'+str(idx)+'.jpg'
+            facePath = os.path.join(outputDirectory,outputPrefix + '_'+str(idx)+'.jpg')
             if size:
                 face = cv2.resize(face, (size,size))
             cv2.imwrite(facePath,face)
-
+            idx += 1
         return faces
-
