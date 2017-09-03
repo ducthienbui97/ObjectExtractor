@@ -1,27 +1,25 @@
-FaceExtractor
+ObjectExtractor
 ------------------
 
-FaceExtractor provide easy to use api to extract faces from images with OpenCV as backend.
+.. image:: lena_extraction.png
+
+ObjectExtractor provide easy to use api to extract faces/objects from images using OpenCV.
 
 Install
 ===============
 .. code::
    
-   pip install FaceExtractor
+   pip install ObjectExtractor
 
 
 Usage
 ===============
 .. code:: python
 
-   from face_extractor import Extractor
+   from object_extractor import Extractor
    Extractor.extract(imagePath)
 
 Sample
 ===============
 Sample codes can be found `here
-<https://github.com/ducthienbui97/FaceExtractor/tree/master/sample>`_.
-
-Lena
-
-.. image:: lena_extraction.png
+<https://github.com/ducthienbui97/ObjectExtractor/tree/master/sample>`_.
