@@ -7,25 +7,17 @@ Created on Fri Jul  7 22:59:52 2017
 
 import cv2
 import os
+from .data import *
 
 
 class Extractor:
-    _current_dir = os.path.dirname(__file__)
-    HAARCASCADE_ALT = os.path.join(
-        _current_dir, 'data', 'haarcascade_frontalface_alt.xml')
-    HAARCASCADE_ALT2 = os.path.join(
-        _current_dir, 'data', 'haarcascade_frontalface_alt2.xml')
-    HAARCASCADE_ALT_TREE = os.path.join(
-        _current_dir, 'data', 'haarcascade_frontalface_alt_tree.xml')
-    HAARCASCADE_DEFAULT = os.path.join(
-        _current_dir, 'data', 'haarcascade_frontalface_default.xml')
-    _current_cascade = HAARCASCADE_DEFAULT
+    _current_cascade = FRONTALFACE_DEFAULT
     _classifier = cv2.CascadeClassifier(_current_cascade)
 
     @classmethod
-    def load(cls, path=HAARCASCADE_DEFAULT):
+    def load(cls, path=FRONTALFACE_DEFAULT):
         """Load cascade xml file and save to _current_cascade
-        path -- the path of the file (default HAARCASCADE_DEFAULT).
+        path -- the path of the file (default FRONTALFACE_DEFAULT).
         """
 
         if path != cls._current_cascade:
@@ -63,7 +55,7 @@ class Extractor:
                scale_factor=1.1,
                min_neighbors=5,
                cascade_file=_current_cascade):
-        """ Return list of faces detected.
+        """ Return list of objects detected.
         image -- The image (numpy matrix) read by readImage function.
         min_size -- Minimum possible object size. Objects smaller than that are ignored (default (50,50)).
         scale_factor -- Specifying how much the image size is reduced at each image scale (default 1.1).
@@ -92,7 +84,7 @@ class Extractor:
                 output_directory=None,
                 output_prefix=None,
                 start_count=0):
-        """ Extract the faces from image and return number of faces detected
+        """ Extract the objects from image and return number of objects detected
         image_path -- The path of the image.
         size -- Size of face images (default None - no rescale at all)
         image -- The image (numpy matrix) read by readImage function.
@@ -106,11 +98,11 @@ class Extractor:
         """
 
         image = cls.read_image(image_path)
-        faces = cls.detect(image,
-                           scale_factor=scale_factor,
-                           min_neighbors=min_neighbors,
-                           min_size=min_size,
-                           cascade_file=cascade_file)
+        objects = cls.detect(image,
+                             scale_factor=scale_factor,
+                             min_neighbors=min_neighbors,
+                             min_size=min_size,
+                             cascade_file=cascade_file)
         idx = start_count
         if not output_prefix:
             output_prefix = os.path.splitext(os.path.split(image_path)[1])[0]
@@ -118,13 +110,12 @@ class Extractor:
             output_directory = os.path.split(image_path)[0]
         if not os.path.exists(output_directory):
             os.makedirs(output_directory)
-        for (x, y, w, h) in faces:
-            face_size = max(w, h)
-            face = image[y:y + face_size, x:x + face_size]
-            face_path = os.path.join(
+        for (x, y, w, h) in objects:
+            obj = image[y:y + h, x:x + w]
+            obj_path = os.path.join(
                 output_directory, output_prefix + '_' + str(idx) + '.jpg')
             if size:
-                face = cv2.resize(face, (size, size))
-            cv2.imwrite(face_path, face)
+                obj = cv2.resize(obj, size)
+            cv2.imwrite(obj_path, obj)
             idx += 1
-        return len(faces)
+        return len(objects)

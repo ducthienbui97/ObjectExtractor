@@ -5,10 +5,10 @@ Created on Sat Jul  8 00:51:00 2017
 @author: thienbui
 """
 import os
-from object_extractor import Extractor
+from object_extractor import Extractor, FRONTALFACE_ALT2
 CURRENT_PATH = os.path.dirname(__file__)
 print(Extractor.extract(os.path.join(CURRENT_PATH, 'ASEAN.jpg'),
-                        cascade_file=Extractor.HAARCASCADE_ALT2,  # haarcascade_frontalface_alt.xml
+                        cascade_file=FRONTALFACE_ALT2,  # haarcascade_frontalface_alt2.xml
                         # output images into AseanSample folder
                         output_directory=os.path.join(
                             CURRENT_PATH, 'AseanSample'),

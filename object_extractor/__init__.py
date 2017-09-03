@@ -6,3 +6,4 @@ Created on Fri Jul  7 23:57:46 2017
 """
 
 from .extractor import Extractor
+from .data import *

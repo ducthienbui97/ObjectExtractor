@@ -7,7 +7,7 @@ def readme():
 
 
 setup(name='ObjectExtractor',
-      version='0.2.1',
+      version='0.2.2',
       description='Extract objects from images with OpenCV',
       url='https://github.com/ducthienbui97/ObjectExtractor',
       author='Thien Bui',
