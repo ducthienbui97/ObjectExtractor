@@ -5,7 +5,7 @@ Created on Sat Jul  8 00:51:00 2017
 @author: thienbui
 """
 import os
-from face_extractor import Extractor
+from object_extractor import Extractor
 CURRENT_PATH = os.path.dirname(__file__)
 print(Extractor.extract(os.path.join(CURRENT_PATH, 'ASEAN.jpg'),
                         cascade_file=Extractor.HAARCASCADE_ALT2,  # haarcascade_frontalface_alt.xml
